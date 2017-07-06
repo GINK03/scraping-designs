@@ -1,0 +1,1 @@
+　米Microsoftは2月24日（現地時間）、ストレージサービス「OneDrive」をサードパーティーアプリで利用できるようにするAPI「OneDrive API」をGithubで一般公開した。 　Windows、iOS、Android、Webをサポートする。サードパーティーアプリ開発者は、MicrosoftのOneNoteなどと同様のOneDriveとの連係機能をアプリに追加できる。例えばアプリで10Gバイトまでのファイルを保存したり、アプリ内でOneDrive上のファイルを検索できるようになる。 　OneDriveの競合サービス「Dropbox」を手掛ける米Dropboxは、昨年12月に同様のAPIを公開している。 Copyright© 2017 ITmedia, Inc. All Rights Reserved.
