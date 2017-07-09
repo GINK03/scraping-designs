@@ -9,7 +9,15 @@
 
 # How to use.
 git cloneしてお手元のPCにダウンロードします  
+git clone and download it to your PC  
+
 ```console
 $ git clone https://github.com/GINK03/itmedia-scraper
+```
+
+実行してダウンロードを開始します  
+Run and start downloading
+```console
+$ python3 scraper.py
 ```
 
