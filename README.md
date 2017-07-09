@@ -15,9 +15,17 @@ git clone and download it to your PC
 $ git clone https://github.com/GINK03/itmedia-scraper
 ```
 
+requirementsをインストールします  
+install requirements.  
+```console
+$ pip3 install -r requrements.txt
+```
+
 実行してダウンロードを開始します  
 Run and start downloading
 ```console
 $ python3 scraper.py
 ```
 
+downloadディレクトリにに各ページが保存されます
+Each page is saved in the download directory
