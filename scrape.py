@@ -30,7 +30,10 @@ def html_fetcher(url):
   proxy = random.choice(proxies)
   print( proxy )
   try:
-    r = requests.get(url, proxies=proxy, headers=headers)
+    if random.random() > 0.2:
+      r = requests.get(url, proxies=proxy, headers=headers)
+    else:
+      r = requests.get(url, headers=headers)
   except Exception as e:
     return []
   r.encoding = r.apparent_encoding
@@ -67,7 +70,7 @@ def main():
     ...
   while True:
     nextUrls = set()
-    with concurrent.futures.ThreadPoolExecutor(max_workers=128) as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=32) as executor:
       for rurls in executor.map(html_fetcher, urls):
         for url in rurls:
           nextUrls.add(url)
