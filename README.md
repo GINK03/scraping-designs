@@ -1,4 +1,4 @@
-# itmedia scraper
+# itmedia scraping
 
 # What is this.
  これは[itmedia](http://www.itmedia.co.jp/)をスクレイピングをおこなうスクリプトです。  
