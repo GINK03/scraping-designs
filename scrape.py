@@ -30,16 +30,19 @@ def html_fetcher(url):
   proxy = random.choice(proxies)
   print( proxy )
   try:
-    if random.random() > 0.2:
-      r = requests.get(url, proxies=proxy, headers=headers)
-    else:
-      r = requests.get(url, headers=headers)
+    #if random.random() > 0.2:
+    r = requests.get(url, proxies=proxy, headers=headers)
+    #else:
+    #  r = requests.get(url, headers=headers)
   except Exception as e:
     return []
   r.encoding = r.apparent_encoding
   print(r.encoding)
   html = r.text
-  open(save_name, 'w').write( html )
+  try:
+    open(save_name, 'w').write( html )
+  except OSError:
+    return []
   soup = bs4.BeautifulSoup(html)
  
   hrefs = []
