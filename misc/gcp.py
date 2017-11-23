@@ -13,7 +13,8 @@ for data in json.loads( data ):
     continue
   try:
     name = data['name']
-    ip = data['networkInterfaces'][0]['networkIP']
+    print(  data['networkInterfaces'][0] )
+    ip = data['networkInterfaces'][0]['accessConfigs'][0]['natIP']
   except KeyError as e:
     continue
   print(name, ip )

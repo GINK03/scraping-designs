@@ -1,9 +1,8 @@
-
-# coding: utf-8
 import os
 import math
 import sys
 import urllib.request, urllib.error, urllib.parse
+import requests
 import http.client
 import ssl
 import re
@@ -12,84 +11,61 @@ from socket import error as SocketError
 import bs4
 import concurrent.futures
 import pickle
+import os
+import gzip
+import random
+import json
+
+proxies = []
+for name, ip in json.loads(open('misc/name_ip.json').read() ).items():
+  proxies.append( {'http': '{}:8080'.format(ip), 'https':'{}:8080'.format(ip) })
+  print(ip)
 
 def html_fetcher(url):
-  if url.status == True:
-    return None
-  if 'itmedia' not in url.url:
-    return None
-  if 'articles' not in url.url:
-    return None
-  if '.jpg' in url.url:
-    return None
-  print( url.url )
-  html = None
-  for _ in range(5):
-    try:
-      opener = urllib.request.build_opener()
-      TIME_OUT = 5
-      opener.addheaders = [('User-Agent', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.63 Safari/537.36')]
-      html = opener.open(url.url, timeout = TIME_OUT).read()
-      pass
-    except Exception as e:
-      print( e )
-      continue
-    break
-  if html == None:
-    return None
-
-  soup      = bs4.BeautifulSoup(html)
-  title     = (lambda x:str(x.string) if x != None else 'Untitled')( soup.title ).replace(' - ITmedia NEWS.', '').replace('/', '')
-  try:
-    contents  = " ".join( [p.text for p in soup.find('div', {'id': 'cmsBody'}).find_all('p')] )
-  except Exception as e:
-    print( e )
-    return None
-
-  # JSを削除
-  contents  = re.sub(r'Reserved*?$', '', contents)
   
-  links = list(set([a['href'] for a in soup.find_all('a', href=True)]) )
-  url.status = True 
-  return title, contents, links, url.url
+  save_name = 'htmls/' + url.replace('/', '_')
+  if os.path.exists(save_name) is True:
+    return []
+  headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36'}
+  proxy = random.choice(proxies)
+  print( proxy )
+  r = requests.get(url, proxies=proxy, headers=headers)
+  html = r.text
+  open(save_name, 'w').write( html )
+  soup = bs4.BeautifulSoup(html)
+ 
+  hrefs = []
+  for href in soup.find_all('a', href=True): 
+    _url = href['href']
+    try:
+      if '/' == _url[0]:
+        _url = 'http://www.itmedia.co.jp' + _url
+    except IndexError as e:
+      continue
+    if 'http://www.itmedia.co.jp' not in _url: continue
+    #print(_url)
+    hrefs.append(_url)
 
-class URL:
-  def __init__(self, url):
-    self.url    = url
-    self.status = False
+  print(url)
+  return hrefs
+
+
 def main():
-  seed = 'http://www.itmedia.co.jp/news/articles/1707/06/news098.html'
+  seed = 'http://www.itmedia.co.jp/'
+  urls =  html_fetcher(seed) 
+ 
   try:
-    res =  html_fetcher(URL(seed)) 
-    title, contents, links, url = res
-    
-    urls = set( map( lambda x: URL(x), links) )
-    noneeds = set(seed)
-    print( contents )
-  except:
-    ...
-  try:
-    noneeds = pickle.loads( open('noneeds.pkl', 'rb').read() )
-    urls    = pickle.loads( open('urls.pkl', 'rb').read() )
-  except:
+    urls = pickle.loads( gzip.decompress( open('urls.pkl.gz', 'rb').read() ) )
+  except FileNotFoundError as e:
     ...
   while True:
     nextUrls = set()
-    #with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
-    #  for res in executor.map(html_fetcher, urls):
-    for res in [html_fetcher(url) for url in urls]:
-      if res is None:
-         continue
-      title, contents, links, url = res
-      noneeds.add( url )
-      try:
-        open('download/{title}.txt'.format(title=title), 'w').write(contents)
-      except OSError as e:
-        ...
-      [ nextUrls.add( URL(x) ) if x not in noneeds else None  for x in links ] 
-    open('noneeds.pkl', 'wb').write( pickle.dumps(noneeds) )
-    open('urls.pkl', 'wb').write( pickle.dumps(urls) )
+    with concurrent.futures.ThreadPoolExecutor(max_workers=64) as executor:
+      for rurls in executor.map(html_fetcher, urls):
+        for url in rurls:
+          nextUrls.add(url)
+    #for urls in [html_fetcher(url) for url in urls]:
     urls = nextUrls
-
+    open('urls.pkl.gz', 'wb').write( gzip.compress(pickle.dumps(urls)) )
        
 main()
