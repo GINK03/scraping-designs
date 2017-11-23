@@ -29,7 +29,12 @@ def html_fetcher(url):
   headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36'}
   proxy = random.choice(proxies)
   print( proxy )
-  r = requests.get(url, proxies=proxy, headers=headers)
+  try:
+    r = requests.get(url, proxies=proxy, headers=headers)
+  except Exception as e:
+    return []
+  r.encoding = r.apparent_encoding
+  print(r.encoding)
   html = r.text
   open(save_name, 'w').write( html )
   soup = bs4.BeautifulSoup(html)
@@ -55,12 +60,14 @@ def main():
   urls =  html_fetcher(seed) 
  
   try:
+    print('try to load pickled urls')
     urls = pickle.loads( gzip.decompress( open('urls.pkl.gz', 'rb').read() ) )
+    print('finished to load pickled urls')
   except FileNotFoundError as e:
     ...
   while True:
     nextUrls = set()
-    with concurrent.futures.ThreadPoolExecutor(max_workers=64) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=128) as executor:
       for rurls in executor.map(html_fetcher, urls):
         for url in rurls:
           nextUrls.add(url)
