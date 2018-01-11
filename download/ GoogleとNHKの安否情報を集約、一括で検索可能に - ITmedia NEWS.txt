@@ -1,1 +1,0 @@
-　GoogleとNHKの被災者安否情報を一括して検索できるようになった。 　Googleの安否情報ツール「Person Finder」とNHKの安否情報ダイヤルに寄せられた情報を集約。Person FinderとNHKオンラインの「安否情報検索」のどちらからでも情報を検索できる。 　Googleは携帯向けのPerson Finderもアップデートし、メールではなくフォームから投稿できるようにした。 Copyright© 2017 ITmedia, Inc. All Rights Reserved.

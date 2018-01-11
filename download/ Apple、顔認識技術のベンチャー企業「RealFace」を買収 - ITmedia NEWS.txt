@@ -1,1 +1,0 @@
-　MacRumorsが、Calcalistの伝えた情報として、Appleは、顔認識技術のベンチャー企業「RealFace」を買収したと報じている。 　買収金額は200万ドル（約2億2000万円）とされ、Webサイトは削除されている。 　同社の顔認識技術は、iOS SDK、Android SDKとして提供されていた技術で、顔の様々な部分を分析し、ディープラーニング＆OCRにより、年齢、性別、人種を判別することが可能だった。 Copyright (C) 1998 Mac Treasure Tracing Club. All rights reserved.

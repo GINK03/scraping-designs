@@ -1,1 +1,0 @@
-　米Facebookが人工知能（AI）ラボを立ち上げだ。同ラボの所長に就任するというニューヨーク大学Center for Data Scienceの所長を務めるヤン・ルカン教授が、自らのFacebookで発表した。 　ルカン教授の専門は、機械学習、コンピュータ視覚、移動ロボット工学、計算論的神経科学。DARPAの野外ロボット向けアルゴリズムプロジェクトを統括した経験も持つ。 　同氏はラボの具体的な課題については明らかにしていないが、AIにおける大きな進展が長期的な目標としているという。ルカン氏は現職と兼任し、FacebookとCenter for Data Scienceはデータ科学、機械学習、AIの研究で協力していくとしている。 Copyright© 2017 ITmedia, Inc. All Rights Reserved.

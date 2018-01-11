@@ -1,1 +1,0 @@
-　ロジテックINAソリューションズは、“Haswell”世代プロセッサの搭載に対応したスリム筐体採用の産業用コントローラPC「LC-72S38」「LC-74S38」を発表、6月中旬に発売する。国産の長寿命型電源を搭載した産業用モデルで、CPUはPentium G3420〜Core i7-4770Sまでの搭載に対応。OSはWindows 7 ProfessionalのほかWindows Embedded 8.1 Proも選択可能だ。標準構成（Core i7-4770S搭載時）の価格はLC-72S38が30万9500円、LC-74S38が32万1300円（ともに税別）。 Copyright© 2017 ITmedia, Inc. All Rights Reserved. この記事が気に入ったらITmedia PC USER に「いいね！」しよう

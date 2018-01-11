@@ -1,1 +1,0 @@
-　米Appleは3月21日（現地時間）、iPadで学べるプログラミングアプリ「Swift Playgrounds」の対応言語に、日本語、中国語（簡体字）、フランス語、ドイツ語、スペイン語を追加した。 　Swift Playgroundsは、Appleが開発したプログラミング言語「Swift」を使い、アプリの作り方を学べる子ども向けのソフト。開発言語の基本を学べるだけでなく、コードをiPadの実機でフルスクリーン動作させ、検証できる。 　Appleは同日、9.7インチRetinaディスプレイを搭載する新型「iPad」も発表した（関連記事）。 Copyright© 2017 ITmedia, Inc. All Rights Reserved.

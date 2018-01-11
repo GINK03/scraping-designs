@@ -1,1 +1,0 @@
-　Googleはこのほど、Android向け翻訳アプリ「Google Translate」の音声翻訳機能を日本語に対応させ、「Crisis Response版」として試験公開した。被災地にいる外国人との会話に役立ちそうだ。 　日本語を含む50以上の言語の間でテキスト翻訳できるアプリ。新たに日本語に対応した「会話モード」では、英語かスペイン語の音声を日本語に翻訳して読み上げたり、日本語の音声を翻訳して英語かスペイン語で読み上げることができる。対応OSはAndroid 2.0以上。 　日本語か英語に翻訳したテキストを読み上げる機能は、iPhone版とWeb版のGoogle Translateでも利用可能だ。 Copyright© 2017 ITmedia, Inc. All Rights Reserved.

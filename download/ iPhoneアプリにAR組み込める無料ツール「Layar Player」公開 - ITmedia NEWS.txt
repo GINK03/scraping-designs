@@ -1,1 +1,0 @@
-　AR（拡張現実）技術を手がける蘭Layarは1月26日、iPhoneアプリにAR機能を追加できる「Layar Player」をリリースした。 　アプリ開発者はこの無料ツールを使って、自作のiPhoneアプリに簡単にAR機能を組み込むことができるという。 　スノーボードゲーム「Snowboard Hero」などLayar Playerを活用したアプリが既に3種登場している。 Copyright© 2017 ITmedia, Inc. All Rights Reserved.

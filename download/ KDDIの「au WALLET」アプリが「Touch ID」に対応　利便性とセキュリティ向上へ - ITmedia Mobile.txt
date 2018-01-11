@@ -1,1 +1,0 @@
-　KDDIは9月18日、「au WALLET」アプリをiPhoneの指紋認証機能「Touch ID」に対応させた。今後はau WALLETアプリでホーム画面を表示する際、ホームボタンに指を重ねるだけで本人確認ができるようになる。KDDIはこれにより、利便性とセキュリティの向上を図ったとしている。 　対応機種は、「iPhone 5s」「iPhone 6」「iPhone 6 Plus」。対応OSはiOS 8。 Copyright© 2017 ITmedia, Inc. All Rights Reserved. この記事が気に入ったらITmedia Mobile に「いいね！」しよう

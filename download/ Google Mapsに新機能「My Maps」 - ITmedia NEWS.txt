@@ -1,1 +1,0 @@
-　米Googleが地図検索サービスGoogle Mapsに新機能「My Maps」を追加した。 　この機能は、ユーザーが地図上のお気に入りの場所にマークを付けたり、線を引いたり、テキストや写真、ビデオを追加してカスタム地図を作成できるというもの。カスタム地図をほかのユーザーと共有することもできる。 　Google Mapsの検索結果タブの隣の「My Maps」タブをクリックして、「Create new map」リンクをクリックするとカスタム地図を作成開始できる。カスタム地図をGoogle Earthで表示することも可能だ。 Copyright© 2017 ITmedia, Inc. All Rights Reserved.
