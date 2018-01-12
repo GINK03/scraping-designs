@@ -67,7 +67,7 @@ def main():
     print('finished to load pickled urls')
   except FileNotFoundError as e:
     ...
-  while True:
+  while urls != set():
     nextUrls = set()
     with concurrent.futures.ProcessPoolExecutor(max_workers=64) as executor:
       for rurls in executor.map(html, urls):
