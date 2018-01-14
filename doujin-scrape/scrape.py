@@ -60,8 +60,9 @@ def html(url):
         continue
       if re.search(r'^http://.*?$', _url) is None: 
         continue
-      print(_url)
-      hrefs.append(_url)
+      #print(_url)
+      if os.path.exists('htmls/' + hashlib.sha256(bytes(_url, 'utf8')).hexdigest()) == False:
+        hrefs.append(_url)
     #print(hrefs)
     open(save_href, 'w').write( json.dumps(hrefs) )
     return hrefs
