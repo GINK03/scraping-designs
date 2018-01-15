@@ -56,7 +56,7 @@ def html(url):
         continue
       hrefs.append(_url)
     open(save_href, 'w').write( json.dumps(hrefs) )
-    return hrefs
+    return [href for href in hrefs if os.path.exists('htmls/' + hashlib.sha256(bytes(href,'utf8')).hexdigest()) == False] 
   except Exception as ex:
     print(ex)
 
