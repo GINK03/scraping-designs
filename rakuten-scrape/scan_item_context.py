@@ -27,8 +27,14 @@ def _map(arr):
       item = soup.find('span', {'class':'item_name'})
       if item is None:
         continue
-      print(ind, item.text)
-      open('items/{}'.format(sha), 'w').write( item.text )
+      item = item.text
+      desc = soup.find('span', {'class':'item_desc'})
+      if desc is None:
+        continue
+      desc = re.sub(r'\s{1,}', ' ', desc.text.strip())
+
+      print(ind, item, desc)
+      open('items/{}'.format(sha), 'w').write( json.dumps({'item':item, 'desc':desc}, indent=2, ensure_ascii=False) )
     except Exception as ex:
       print(ex)
 
