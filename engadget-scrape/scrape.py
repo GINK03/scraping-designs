@@ -67,7 +67,9 @@ def main():
     print('finished to load pickled urls')
   except FileNotFoundError as e:
     ...
-  while True:
+  sys.exit()
+  while urls != set():
+    print(urls)
     nextUrls = set()
     with concurrent.futures.ProcessPoolExecutor(max_workers=64) as executor:
       for rurls in executor.map(html, urls):
@@ -75,5 +77,6 @@ def main():
           nextUrls.add(url)
     urls = nextUrls
     open('urls.pkl.gz', 'wb').write( gzip.compress(pickle.dumps(urls)) )
+
        
 main()

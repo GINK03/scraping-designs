@@ -39,7 +39,7 @@ def html(url):
     r.encoding = r.apparent_encoding
     html = r.text
     try:
-      open(save_name, 'w').write( html )
+      open(save_name, 'wb').write( gzip.compress(bytes(html,'utf8')) )
     except OSError:
       return []
     soup = bs4.BeautifulSoup(html)
@@ -54,9 +54,10 @@ def html(url):
         continue
       if re.search(r'^' + URL, _url) is None: 
         continue
+      _url = re.sub(r'\?.*?$', '', _url)
       hrefs.append(_url)
     open(save_href, 'w').write( json.dumps(hrefs) )
-    return hrefs
+    return [href for href in hrefs if os.path.exists('htmls/' + hashlib.sha256(bytes(href,'utf8')).hexdigest()) == False] 
   except Exception as ex:
     print(ex)
 
