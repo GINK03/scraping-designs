@@ -25,6 +25,7 @@ except:
   ...
 URL = 'https://.*?.rakuten.co.jp'
 def html(url): 
+  try:
     print(url)
     save_name = 'htmls/' + hashlib.sha256(bytes(url,'utf8')).hexdigest()
     save_href = 'hrefs/' + hashlib.sha256(bytes(url,'utf8')).hexdigest()
@@ -56,9 +57,14 @@ def html(url):
         continue
       if re.search(r'^' + URL, _url) is None: 
         continue
+
+      _url = re.sub(r'\?.*?$', '', _url)
       hrefs.append(_url)
     open(save_href, 'w').write( json.dumps(hrefs) )
-    return hrefs
+    return [ href for href in hrefs if os.path.exists('htmls/' + hashlib.sha256(bytes(href,'utf8')).hexdigest()) == False]
+  except Exception as ex:
+    print('Deep Error ', ex)
+    return []
 
 def main():
   seed = 'https://item.rakuten.co.jp/jism/0718037840222-44-23457-n/'
@@ -74,8 +80,7 @@ def main():
   while True:
     nextUrls = set()
 
-    html(list(urls)[0])
-    with concurrent.futures.ProcessPoolExecutor(max_workers=64) as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=32) as executor:
       for rurls in executor.map(html, urls):
         for url in rurls:
           nextUrls.add(url)

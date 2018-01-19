@@ -17,7 +17,7 @@ import re
 import dbm
 def _name(arr):
   index, names = arr
-  db = dbm.open('dbms/{:09d}.db'.format(index), 'c')
+  #db = dbm.open('dbms/{:09d}.db'.format(index), 'c')
   for name in names:
     soup = bs4.BeautifulSoup(open(name).read())
     #print(name)
@@ -47,8 +47,8 @@ def _name(arr):
       print(obj)
       try:
         sha256 = hashlib.sha256(bytes(obj, 'utf8')).hexdigest()
-        #open('reviews/' + sha256, 'w').write( obj )
-        db[ sha256 ] = obj
+        open('reviews/' + sha256, 'w').write( obj )
+        #db[ sha256 ] = obj
       except Exception as ex:
         print(ex)
 
