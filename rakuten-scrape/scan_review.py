@@ -15,11 +15,13 @@ import hashlib
 import re
 
 import dbm
+
+import gzip
 def _name(arr):
   index, names = arr
   #db = dbm.open('dbms/{:09d}.db'.format(index), 'c')
   for name in names:
-    soup = bs4.BeautifulSoup(open(name).read())
+    soup = bs4.BeautifulSoup( gzip.decompress(open(name,'rb').read()).decode() )
     #print(name)
     link = soup.find('link', {'rel':'canonical'})
     if link is None:

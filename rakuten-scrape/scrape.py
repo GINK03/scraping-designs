@@ -26,6 +26,7 @@ except:
 URL = 'https://.*?.rakuten.co.jp'
 def html(url): 
   try:
+     
     print(url)
     save_name = 'htmls/' + hashlib.sha256(bytes(url,'utf8')).hexdigest()
     save_href = 'hrefs/' + hashlib.sha256(bytes(url,'utf8')).hexdigest()
@@ -40,7 +41,7 @@ def html(url):
     html = r.text
     #print(html)
     try:
-      open(save_name, 'w').write( html )
+      open(save_name, 'wb').write( gzip.compress(bytes(html,'utf8')) )
     except OSError:
       return []
     soup = bs4.BeautifulSoup(html)
@@ -59,6 +60,8 @@ def html(url):
         continue
 
       _url = re.sub(r'\?.*?$', '', _url)
+      if re.search(r'search', _url) is not None:
+        continue
       hrefs.append(_url)
     open(save_href, 'w').write( json.dumps(hrefs) )
     return [ href for href in hrefs if os.path.exists('htmls/' + hashlib.sha256(bytes(href,'utf8')).hexdigest()) == False]
