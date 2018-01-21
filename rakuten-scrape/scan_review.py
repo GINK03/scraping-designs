@@ -17,10 +17,14 @@ import re
 import dbm
 
 import gzip
+
+import time
 def _name(arr):
   index, names = arr
   #db = dbm.open('dbms/{:09d}.db'.format(index), 'c')
   for name in names:
+    '''スリープを十分に入れて、いくつかの法的根拠を満たす'''
+    time.sleep(30.0)
     soup = bs4.BeautifulSoup( gzip.decompress(open(name,'rb').read()).decode() )
     #print(name)
     link = soup.find('link', {'rel':'canonical'})
