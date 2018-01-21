@@ -17,7 +17,7 @@ import random
 import json
 import re
 import hashlib
-
+import time
 try:
   os.mkdir('htmls')
   os.mkdir('hrefs')
@@ -25,6 +25,8 @@ except:
   ...
 URL = 'https://www.amazon.co.jp'
 def html(url): 
+  '''30秒間スリープする'''
+  time.sleep(30.0)
   try:
     print(url)
     save_name = 'htmls/' + hashlib.sha256(bytes(url,'utf8')).hexdigest()
