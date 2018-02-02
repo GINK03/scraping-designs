@@ -29,7 +29,7 @@ def _map(arr):
     open(f'htmls/{name}', 'w').write( r.text )
 
 arrs = {}
-for index, i in enumerate(sorted(range(1409307, 14093070), key=lambda x:x*-1)):
+for index, i in enumerate(sorted(range(1409307, 14247796), key=lambda x:x*-1)):
   key = index%32
   if arrs.get(key) is None:
     arrs[key] = []

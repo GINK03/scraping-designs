@@ -17,15 +17,10 @@ import hashlib
 import json
 m = MeCab.Tagger("-Owakati")
 
-def _map(name):
-  print(name)
-  db = dbm.open(name)
-  url_vals = {}
-  print(db)
-  for url in db.keys():
-    html = db[url].decode()
-    try:
-      soup = bs4.BeautifulSoup(html, "html5lib")
+def _map(arg):
+  key,names = arg
+  for name in names:
+      soup = bs4.BeautifulSoup(open(name).read(), "html5lib")
       title = soup.find("h1", {"class" : "articleTtl"}) 
       if title is None: 
         continue
@@ -38,14 +33,16 @@ def _map(name):
       titles = title.text.strip()
       bodies = body.text.strip()
       o = {"time":time, "titles":titles, "bodies":bodies }
-      name = hashlib.sha256(url).hexdigest()
-      open(f'contents/{name}', 'w').write( json.dumps(o, indent=2, ensure_ascii=False) )
-    except Exception as ex:
-      print(ex)
-      continue
+      save = name.split('/').pop()
+      open(f'contents/{save}', 'w').write( json.dumps(o, indent=2, ensure_ascii=False) )
 
-names = [ name for name in glob.glob('dbms/htmls_*.dbm') ]
-
-#_map(names[0])
+args = {}
+for index, name in enumerate(glob.glob('htmls/*')):
+  key = index%32
+  if args.get(key) is None:
+    args[key] = []
+  args[key].append( name )
+args = [(key,names) for key,names in args.items()]
+#_map(args[0])
 with concurrent.futures.ProcessPoolExecutor(max_workers=18) as exe:
-  exe.map(_map, names)
+  exe.map(_map, args)
