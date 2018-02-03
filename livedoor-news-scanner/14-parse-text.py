@@ -15,11 +15,16 @@ import concurrent.futures
 import hashlib
 
 import json
+
+import os
 m = MeCab.Tagger("-Owakati")
 
 def _map(arg):
   key,names = arg
   for name in names:
+      save = name.split('/').pop()
+      if os.path.exists(f'contents/{save}'):
+        continue
       soup = bs4.BeautifulSoup(open(name).read(), "html5lib")
       title = soup.find("h1", {"class" : "articleTtl"}) 
       if title is None: 
