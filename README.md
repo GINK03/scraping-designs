@@ -32,7 +32,7 @@ Each page is saved in the download directory
 
 ```console
 @article{ ITmeadi Scraping,
-    title   = { ITmedai Scraping },
+    title   = { Scraping designs },
     author  = { nardtree },
     journal = { arXiv preprint arXiv:1506.06724 },
     year    = { 2017 }
