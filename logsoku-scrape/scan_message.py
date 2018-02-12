@@ -13,6 +13,10 @@ import json
 import hashlib
 
 import gzip
+
+import pickle
+
+import random
 def _name(arr):
   index, names = arr
 
@@ -22,9 +26,21 @@ def _name(arr):
       base = soup.find('base')
       if base is None:
         continue
-      print(base.get('href'))
-      messages = soup.find_all('div', {'class':'message'})
-      print(messages)
+
+      href = base.get('href')
+      messages = [m.text for m in soup.find_all('div', {'class':'message'})]
+      for msg in messages: 
+        obj = {}
+        obj['href'] = href
+        obj['msg']  = msg
+        if random.random() < 0.01: 
+          print(obj)
+        data = pickle.dumps(obj)
+        ha = hashlib.sha256(bytes(msg, 'utf8')).hexdigest()
+        if os.path.exists(f'messages/{ha}'):
+          continue
+        open(f'messages/{ha}', 'wb').write( data )
+
     except Exception as ex:
       print(ex)
 arr = {}

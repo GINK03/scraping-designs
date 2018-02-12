@@ -25,6 +25,7 @@ except:
   ...
 URL = 'http://mevius.5ch.net'
 def html(url): 
+  url = url.replace('//mevius.5ch.net//mevius.5ch.net', '//mevius.5ch.net')  
   '''30秒間スリープする'''
   #time.sleep(30.0)
   try:
@@ -57,6 +58,7 @@ def html(url):
       if re.search(r'^' + URL, _url) is None: 
         continue
       _url = re.sub(r'\?.*?$', '', _url)
+      _url = _url.replace('//mevius.5ch.net//mevius.5ch.net', '//mevius.5ch.net')  
       hrefs.append(_url)
     open(save_href, 'w').write( json.dumps(hrefs) )
     return [href for href in hrefs if os.path.exists('htmls/' + hashlib.sha256(bytes(href,'utf8')).hexdigest()) == False] 
