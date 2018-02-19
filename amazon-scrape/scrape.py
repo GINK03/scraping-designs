@@ -10,6 +10,7 @@ import multiprocessing as mp
 from socket import error as SocketError
 import bs4
 import concurrent.futures
+import glob
 import pickle
 import os
 import gzip
@@ -26,7 +27,7 @@ except:
 URL = 'https://www.amazon.co.jp'
 def html(url): 
   '''30秒間スリープする'''
-  time.sleep(30.0)
+  #time.sleep(30.0)
   try:
     print(url)
     save_name = 'htmls/' + hashlib.sha256(bytes(url,'utf8')).hexdigest()
@@ -70,11 +71,18 @@ def main():
   try:
     print('try to load pickled urls')
     urls = pickle.loads( gzip.decompress( open('urls.pkl.gz', 'rb').read() ) )
-    print(urls)
+    #print(urls)
     print('finished to load pickled urls')
   except FileNotFoundError as e:
     ...
-  while True:
+  
+  if '--asin' in sys.argv:
+    urls = set()
+    for name in glob.glob('chunk/*'):
+      asins = json.load(open(name))
+      for asin in asins:
+        urls.add( f'https://www.amazon.co.jp/gp/product/{asin}/' ) 
+  while urls != set():
     nextUrls = set()
     with concurrent.futures.ProcessPoolExecutor(max_workers=16) as executor:
       for rurls in executor.map(html, urls):
