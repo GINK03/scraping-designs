@@ -34,13 +34,19 @@ def html(url):
     save_href = 'hrefs/' + hashlib.sha256(bytes(url,'utf8')).hexdigest()
     if os.path.exists(save_name) is True:
       return []
-    headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36'}
+    headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:58.0) Gecko/20100101 Firefox/58.0'}
+    headers['referer'] = 'https://www.amazon.co.jp'
     try:
       r = requests.get(url, headers=headers)
+      print(r.status_code)
     except Exception as e:
       return []
+    time.sleep(random.randint(3,7))
     r.encoding = r.apparent_encoding
     html = r.text
+    if 'ロボット' in html:
+      return []
+    print(html)
     try:
       open(save_name, 'wb').write( gzip.compress(bytes(html,'utf8')) )
     except OSError:
@@ -78,13 +84,13 @@ def main():
   
   if '--asin' in sys.argv:
     urls = set()
-    for name in glob.glob('chunk/*'):
+    for name in glob.glob('../../../sdb/scraping-designs/amazon-scrape/chunk/*'):
       asins = json.load(open(name))
       for asin in asins:
         urls.add( f'https://www.amazon.co.jp/gp/product/{asin}/' ) 
   while urls != set():
     nextUrls = set()
-    with concurrent.futures.ProcessPoolExecutor(max_workers=16) as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=1) as executor:
       for rurls in executor.map(html, urls):
         for url in rurls:
           nextUrls.add(url)
