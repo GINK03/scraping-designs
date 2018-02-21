@@ -19,7 +19,7 @@ def _map(arg):
   for script in soup(["script", "style"]):
     script.extract()    # rip it out
 
-  center = soup.find('div', {'id':'centerCol'})
+  center = soup.find('div', {'id':'contentMain-inner'})
   if center is None:
     return
   print( index, name )

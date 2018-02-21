@@ -27,7 +27,7 @@ except:
 URL = 'https://kakuyomu.jp'
 def html(url): 
   '''30秒間スリープする'''
-  time.sleep(30.0)
+  # time.sleep(30.0)
   try:
     print(url)
     save_name = 'htmls/' + hashlib.sha256(bytes(url,'utf8')).hexdigest()
@@ -44,7 +44,7 @@ def html(url):
     time.sleep(random.randint(3,7))
     r.encoding = r.apparent_encoding
     html = r.text
-    print(html)
+    #print(html)
     try:
       open(save_name, 'wb').write( gzip.compress(bytes(html,'utf8')) )
     except OSError:
@@ -54,6 +54,7 @@ def html(url):
     hrefs = []
     for href in soup.find_all('a', href=True): 
       _url = href['href']
+      #print(_url)
       try:
         if '/' == _url[0]:
           _url = URL + _url
@@ -82,7 +83,7 @@ def main():
   
   while urls != set():
     nextUrls = set()
-    with concurrent.futures.ProcessPoolExecutor(max_workers=32) as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=64) as executor:
       for rurls in executor.map(html, urls):
         for url in rurls:
           nextUrls.add(url)
