@@ -31,11 +31,20 @@ $ python3 scraper.py
 downloadディレクトリにに各ページが保存されます
 Each page is saved in the download directory
 
+
+
+## Legal 
+原則として業務妨害に類するスクレイピングと、著作権に関しては慎重にするべきです
+
+> In the United States, website owners can use three major legal claims to prevent undesired web scraping: (1) copyright infringement (compilation), (2) violation of the Computer Fraud and Abuse Act (“CFAA”), and (3) trespass to chattel.[7] However, the effectiveness of these claims relies upon meeting various criteria, and the case law is still evolving. For example, with regard to copyright, while outright duplication of original expression will in many cases be illegal, in the United States the courts ruled in Feist Publications v. Rural Telephone Service that duplication of facts is allowable.
+
+スクレイピングをして、何らかのissueを受けるような場合、真摯に対応してください
+
+## article
+
 ```console
 @article{ Scraping Desings,
     title   = { Scraping designs },
     author  = { nardtree },
 }
 ```
-
-## Legal 
