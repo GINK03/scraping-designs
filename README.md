@@ -1,4 +1,4 @@
-# itmedia scraping
+# scraping-designs
 
 # What is this.
  これは様々なスクレイピングをおこなうスクリプトです。  
