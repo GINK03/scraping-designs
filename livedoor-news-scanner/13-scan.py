@@ -11,6 +11,12 @@ import random
 import hashlib
 
 import os
+
+try:
+  os.mkdir('htmls')
+except:
+  ...
+
 base_url = 'http://news.livedoor.com/article/detail/{}/'
 
 headers = {'User-agent':"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36"}
@@ -29,7 +35,7 @@ def _map(arr):
     open(f'htmls/{name}', 'w').write( r.text )
 
 arrs = {}
-for index, i in enumerate(sorted(range(1409307, 14247796), key=lambda x:x*-1)):
+for index, i in enumerate(sorted(range(1409307, 14385616), key=lambda x:x*-1)):
   key = index%32
   if arrs.get(key) is None:
     arrs[key] = []
