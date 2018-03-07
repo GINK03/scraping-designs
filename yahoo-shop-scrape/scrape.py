@@ -39,7 +39,8 @@ def html(url):
       r = requests.get(url, headers=headers)
     except Exception as e:
       return []
-    r.encoding = r.apparent_encoding
+    #r.encoding = r.apparent_encoding
+    r.encoding = 'utf8'
     html = r.text
     #print(html)
     try:
