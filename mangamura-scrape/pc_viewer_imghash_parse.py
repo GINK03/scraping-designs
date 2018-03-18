@@ -1,6 +1,14 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.ui import WebDriverWait
+
+from selenium.webdriver.support import expected_conditions as EC
+
+from selenium.webdriver.common.action_chains import ActionChains
+
+from selenium.webdriver.common.by import By
+
 
 import bs4
 
@@ -62,14 +70,25 @@ def _map(arg):
         ...
       # もしキャプチャがあれば、キャプチャをクリックする
       try:
+        recaptchaFrame = WebDriverWait(driver, 7).until(
+          EC.presence_of_element_located((By.TAG_NAME ,'iframe'))
+        )
+        frameName = recaptchaFrame.get_attribute('iframe')
+        driver.switch_to_frame(frameName)
         time.sleep( random.randint(3, 10)/10.0 )
-        iframe = driver.find_element_by_tag_name("iframe")
-        driver.switch_to_frame(iframe)
-        num = driver.find_element_by_id('recaptcha-anchor')
-        #if num != []:
-        time.sleep( random.randint(3, 10)/10.0 )
-        driver.find_element_by_id('recaptcha-anchor')[0].click()
-        time.sleep(5.0)
+        # driver.find_element_by_class_name('recaptcha-checkbox-checkmark').click()
+        # driver.execute_script("$('#recaptcha-anchor').attr('aria-checked','true');")
+        CheckBox = WebDriverWait(driver, 10).until(
+          EC.presence_of_element_located((By.ID ,"recaptcha-anchor"))
+        )
+        time.sleep( random.uniform(1.0, 2.0) )
+        hover = ActionChains(driver).move_to_element(CheckBox)
+        hover.perform()
+        time.sleep( random.uniform(0.5, 0.7) )
+        clickReturn= CheckBox.click()
+        print('\n\r after click on CheckBox... \n\r CheckBox click result: ' , clickReturn)
+
+        time.sleep(8.0)
         print(f'handle captcha')
       except Exception as ex:
         print(f'No recaptcha! {ex}')
@@ -90,9 +109,9 @@ def _map(arg):
 
 urls = ['http://mangamura.org/kai_pc_viewer?p=1499591881']
 #_map(urls[0])
-
+#sys.exit()
 urls = pickle.loads(gzip.decompress(open('pc_viewer_urls.pkl.gz', 'rb').read()))
 
-with concurrent.futures.ProcessPoolExecutor(max_workers=32) as exe:
+with concurrent.futures.ProcessPoolExecutor(max_workers=20) as exe:
   exe.map(_map, urls)
 
