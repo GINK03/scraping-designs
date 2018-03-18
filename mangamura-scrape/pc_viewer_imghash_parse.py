@@ -18,7 +18,7 @@ import os
 import random
 URL = 'http://mangamura.org'
 
-def _right_click(driver):
+#def _right_click(driver):
 def _map(arg):
   url = arg
   options = Options()
@@ -61,18 +61,20 @@ def _map(arg):
       except:
         ...
       # もしキャプチャがあれば、キャプチャをクリックする
-      driver.switch_to_frame(driver.find_element_by_tag_name("iframe"))
       try:
-        driver.find_elements_by_class_name('recaptcha-checkbox-checkmark')
-        time.sleep( random.randint(55, 130)/10.0 )
-        driver.find_elements_by_class_name('recaptcha-checkbox-checkmark')[0].click()
-        time.sleep(5.0)
-        driver.switch_to_default_content()
+        time.sleep( random.randint(3, 10)/10.0 )
+        iframe = driver.find_element_by_tag_name("iframe")
+        driver.switch_to_frame(iframe)
+        num = driver.find_element_by_id('recaptcha-anchor')
+        #if num != []:
+        time.sleep( random.randint(3, 10)/10.0 )
+        driver.find_element_by_id('recaptcha-anchor')[0].click()
         time.sleep(5.0)
         print(f'handle captcha')
       except Exception as ex:
         print(f'No recaptcha! {ex}')
-        driver.switch_to_default_content()
+        ...
+      driver.switch_to_default_content()
 
       driver.save_screenshot(f'sss/{ha}/{ha}_{i}.png')
       action = webdriver.common.action_chains.ActionChains(driver)
@@ -91,6 +93,6 @@ urls = ['http://mangamura.org/kai_pc_viewer?p=1499591881']
 
 urls = pickle.loads(gzip.decompress(open('pc_viewer_urls.pkl.gz', 'rb').read()))
 
-with concurrent.futures.ProcessPoolExecutor(max_workers=64) as exe:
+with concurrent.futures.ProcessPoolExecutor(max_workers=32) as exe:
   exe.map(_map, urls)
 
