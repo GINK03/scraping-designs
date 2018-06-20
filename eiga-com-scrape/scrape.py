@@ -71,7 +71,7 @@ def main():
   while urls != set():
     print(urls)
     nextUrls = set()
-    with concurrent.futures.ProcessPoolExecutor(max_workers=32) as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=32*4) as executor:
       for rurls in executor.map(html, urls):
         for url in rurls:
           nextUrls.add(url)
