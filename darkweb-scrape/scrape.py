@@ -49,7 +49,7 @@ def html(url):
       open(save_name, 'wb').write( gzip.compress(bytes(html,'utf8')) )
     except OSError:
       return []
-    soup = bs4.BeautifulSoup(html)
+    soup = bs4.BeautifulSoup(html, 'lxml')
 
     hrefs = []
     for href in soup.find_all('a', href=True): 
