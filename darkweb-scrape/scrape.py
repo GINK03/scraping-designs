@@ -62,7 +62,7 @@ def html(url):
       if re.search(r'.*?\.onion/', _url) is None: 
         continue
       _url = re.sub(r'\?.*?$', '', _url)
-      print(_url)
+      #print(_url)
       hrefs.append(_url)
     open(save_href, 'w').write( json.dumps(hrefs) )
     return [href for href in hrefs if os.path.exists('htmls/' + hashlib.sha256(bytes(href,'utf8')).hexdigest()) == False] 
@@ -83,7 +83,7 @@ def main():
  
   while True:
     nextUrls = set()
-    with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=32) as executor:
       for rurls in executor.map(html, urls):
         for url in rurls:
           nextUrls.add(url)
