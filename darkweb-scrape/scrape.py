@@ -25,13 +25,25 @@ except:
   ...
 import requests
 #s = session.get('http://ipjy2snhdjwrnk3m.onion')
-URL = 'http://wiki5kauuihowqi5.onion/'
+
+def adhoc_filter(url):
+  if '-' in url:
+    print('pass', url)
+    return False
+  return True
+
+URL = 'http://zqktlwi4fecvo6ri.onion/wiki/'
 def html(url): 
   try:
+    if adhoc_filter(url) is False:
+      return []
     print(url)
     save_name = 'htmls/' + hashlib.sha256(bytes(url,'utf8')).hexdigest()
     save_href = 'hrefs/' + hashlib.sha256(bytes(url,'utf8')).hexdigest()
+    save_bann = 'bann/' + hashlib.sha256(bytes(url,'utf8')).hexdigest()
     if os.path.exists(save_name) is True:
+      return []
+    if os.path.exists(save_bann) is True:
       return []
     headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36'}
     try:
@@ -41,6 +53,7 @@ def html(url):
       r = session.get(url, headers=headers)
     except Exception as e:
       print(e)
+      with open(save_bann, 'w') as fp: ...
       return []
     r.encoding = r.apparent_encoding
     html = r.text
@@ -62,7 +75,7 @@ def html(url):
       if re.search(r'.*?\.onion/', _url) is None: 
         continue
       _url = re.sub(r'\?.*?$', '', _url)
-      #print(_url)
+      print(_url)
       hrefs.append(_url)
     open(save_href, 'w').write( json.dumps(hrefs) )
     return [href for href in hrefs if os.path.exists('htmls/' + hashlib.sha256(bytes(href,'utf8')).hexdigest()) == False] 

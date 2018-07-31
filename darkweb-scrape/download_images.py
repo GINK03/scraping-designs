@@ -30,6 +30,8 @@ import time
 img_urls = json.load(open('img_urls.json'))
 
 def pmap(img_url):
+  if re.search(r'^//', img_url):
+    img_url = re.sub('^//', 'http://', img_url)
   #print(img_url) 
   try:
     hashs = hashlib.sha256(bytes(img_url, 'utf8')).hexdigest() 

@@ -8,7 +8,8 @@ from bs4 import BeautifulSoup as BS
 from concurrent.futures import ProcessPoolExecutor as PPE
 
 shared_paths = {} 
-for index, path in enumerate(list(Path("./htmls/").glob("*"))):#[:10000]):
+for index, path in enumerate(list(Path("./htmls/").glob("*"))):
+#for index, path in enumerate(list(Path("./htmls/").glob("*"))[:10000]):
   key = index%10
   if shared_paths.get(key) is None:
     shared_paths[key] = []
@@ -22,14 +23,16 @@ def pmap(arg):
   size = len(paths)
 
   for nu, path in enumerate(paths):
-    html = gzip.decompress(path.open('rb').read()).decode('utf8')
-    soup = BS(html)
+    try:
+      html = gzip.decompress(path.open('rb').read()).decode('utf8')
+      soup = BS(html)
 
-    print(key, nu, size, path)
-    for img in soup.findAll("img"):
-      src = img["src"]
-      if src not in srcs:
-        srcs.add(src)
+      print(key, nu, size, path)
+      for img in soup.findAll("img"):
+        src = img["src"]
+        if src not in srcs:
+          srcs.add(src)
+    except: continue
   return srcs
 
 #pmap(args[0])
