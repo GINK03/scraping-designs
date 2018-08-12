@@ -3,14 +3,16 @@ from pathlib import Path
 import json
 import requests
 from concurrent.futures import ProcessPoolExecutor as ppe
-
+import os
 fps = [fp for fp in Path('parsed').glob('*')]
 def pmap(fp):
   try:
-    print(fp)
     obj = json.load(fp.open())
-    print(obj)
     text, hash, img_url, num_clk, target = obj
+    if os.path.exists(f'imgs/{hash}.jpg'):
+      return 
+    print(fp)
+    print(obj)
     img_url = 'http:' + img_url
 
     r = requests.get(img_url)
@@ -22,6 +24,6 @@ def pmap(fp):
         f.write( img )
   except Exception as ex:
     print(ex)
-with ppe(max_workers=32) as exe:
+with ppe(max_workers=24) as exe:
   exe.map(pmap, fps)
 
