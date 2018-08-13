@@ -4,16 +4,20 @@ import json
 import requests
 from concurrent.futures import ProcessPoolExecutor as ppe
 import os
+import re
 fps = [fp for fp in Path('parsed').glob('*')]
 def pmap(fp):
   try:
     obj = json.load(fp.open())
-    text, hash, img_url, num_clk, target = obj
+    text, hash, img_url, num_clk, target, tags = obj
     if os.path.exists(f'imgs/{hash}.jpg'):
       return 
     print(fp)
     print(obj)
-    img_url = 'http:' + img_url
+    if re.search(r'^http:', img_url):
+      img_url = img_url
+    else:
+      img_url = 'http:' + img_url
 
     r = requests.get(img_url)
     print(img_url)
@@ -24,6 +28,6 @@ def pmap(fp):
         f.write( img )
   except Exception as ex:
     print(ex)
-with ppe(max_workers=24) as exe:
+with ppe(max_workers=96) as exe:
   exe.map(pmap, fps)
 

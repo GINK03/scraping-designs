@@ -27,9 +27,10 @@ def _map(arg):
       img = soup.find('div', {'class':'itemImage'}).find('img').get('src')
       clk = soup.find('div', {'class':'clickCnt'}).text
       blg = soup.find('div', {'class':'gotoBlog'}).find('a').get('href')
+      tags = [a.text for a in soup.find('div', {'class':'itemTag'}).find_all('a')]
     if random.random() < 0.1: 
       ...
-    obj = [h3.text, hash, img, clk, blg]
+    obj = [h3.text, hash, img, clk, blg, tags]
     print(obj)
 
     json.dump(obj, fp=open(f'parsed/{hash}', 'w'), indent=2, ensure_ascii=False)
