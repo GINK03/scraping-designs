@@ -31,7 +31,7 @@ def _map(arg):
     h1 = soup.find('h1')
     print(h1.text)
 
-    target_folder = h1.text
+    target_folder = 'folders/' + h1.text
 
     try: 
       os.mkdir(target_folder)
@@ -39,11 +39,9 @@ def _map(arg):
 
     canonical = soup.find('link', {'href':True, 'rel':'canonical'}).get('href')
 
-    hash256 = hashlib.sha256(bytes(canonical, 'utf8')).hexdigest()
-    print(canonical, hash256)
 
     tables = soup.find('table', {'class':'tag'})
-    tags = tables.find_all('a')
+    tags = [a.text for a in tables.find_all('a')]
     print(tags)
 
     for img in soup.find_all('img',{'src':True}):
@@ -63,7 +61,10 @@ def _map(arg):
       with open(f'{target_folder}/{num_img:04d}.jpg', 'wb') as fp: fp.write( ri.content )
 
       #print(img)
-    #json.dump(obj, fp=open(f'parsed/{hash}', 'w'), indent=2, ensure_ascii=False)
+    obj = {'url':canonical, 'tags':tags} 
+    hash256 = hashlib.sha256(bytes(canonical, 'utf8')).hexdigest()
+    print(canonical, hash256)
+    json.dump(obj, fp=open(f'{target_folder}/{hash256}.json', 'w'), indent=2, ensure_ascii=False)
     return None
   except Exception as exe:
     print(exe)
@@ -71,6 +72,6 @@ def _map(arg):
 
 args = [(index,name) for index,name in enumerate(glob.glob('htmls/*'))]
 
-[ _map(arg) for arg in args ]
+#[ _map(arg) for arg in args ]
 with concurrent.futures.ProcessPoolExecutor(max_workers=64) as exe:
   exe.map( _map, args)
