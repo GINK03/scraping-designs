@@ -26,16 +26,20 @@ def _map(arg):
     try:
       canonical = soup.find('link', {'href':True, 'rel':'canonical'}).get('href')
     except: return
+    hash256 = hashlib.sha256(bytes(canonical, 'utf8')).hexdigest()
 
     title = soup.title.text
-    print(title)
     h2 = soup.find('h2')
-    print(h2.text)
     
     target_folder = 'folders/' + h2.text
+    if os.path.exists(f'{target_folder}/{hash256}.json'):
+      return
+    print(title)
+    print(h2.text)
     try: 
       os.mkdir(target_folder)
-    except: ...
+    except: 
+      return
     
 
     tags = [a.text for a in soup.find('dl', {'class':'article-tags'}).find_all('a')]
@@ -53,7 +57,7 @@ def _map(arg):
       with open(f'{target_folder}/{num_img:04d}.jpg', 'wb') as fp: fp.write( ri.content )
 
       #print(img)
-    obj = {'url':canonical, 'tags':tags} 
+    obj = {'url':canonical, 'tags':tags, 'h2':h2.text} 
     hash256 = hashlib.sha256(bytes(canonical, 'utf8')).hexdigest()
     print(canonical, hash256)
     json.dump(obj, fp=open(f'{target_folder}/{hash256}.json', 'w'), indent=2, ensure_ascii=False)
