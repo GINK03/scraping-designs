@@ -47,7 +47,8 @@ def html(url):
         sub_url = URL + sub_url
       if '/doujin/' not in sub_url:
         continue
-      print(sub_url)
+      sub_url = re.sub(r'\?.*?$', '', sub_url)
+      print(sub_url, re.sub(r'\?.*?$', '', sub_url) )
       hrefs.append(sub_url)
     open(save_href, 'w').write( json.dumps(hrefs) )
     return [href for href in hrefs if os.path.exists('htmls/' + hashlib.sha256(bytes(href,'utf8')).hexdigest()) == False] 
@@ -78,7 +79,7 @@ def main(resume):
           nextUrls.add(url)
     urls = nextUrls
     print(urls)
-    #open('urls.pkl.gz', 'wb').write( gzip.compress(pickle.dumps(urls)) )
+    open('urls.pkl.gz', 'wb').write( gzip.compress(pickle.dumps(urls)) )
 
 if __name__ == '__main__':
   main()
