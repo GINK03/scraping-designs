@@ -2,6 +2,7 @@ import glob
 import re
 import json
 import MeCab
+import pandas as pd
 
 tags = { tag for tag, hashs in json.load(open('tag_hashs.json')).items() }
 m = MeCab.Tagger('-Owakati')
@@ -30,6 +31,7 @@ for datum in data:
 word_index = { word:index for index, word in enumerate(words_set) }
 print(word_index)
 datasource = {'_stars_':[]} 
+
 for word in word_index.keys():
   datasource[word] = []
 
@@ -43,21 +45,20 @@ for datum in data:
       datasource[word].append( 0 )
     else:
       datasource[word].append( 1 )
-
-import pandas as pd
-
 df = pd.DataFrame( datasource )
-
 print( df.head() )
-
 df.to_csv('source.csv', index=None)
+
 # sys.exit()
 # test
-datatarget = {}
+datatarget = { '_filename_':[] }
 for word in word_index.keys():
   datatarget[word] = []
-for fn in glob.glob('../folders/*/*.json'):
+for fn in sorted(glob.glob('../folders/*/*.json')):
   print(fn)
+  sfn = fn.split('/')[3].replace('.json', '')
+  print(sfn)
+  datatarget['_filename_'].append( sfn )
   obj = json.load(open(fn))
   _tags = set( obj['tags'] )
   print(_tags)

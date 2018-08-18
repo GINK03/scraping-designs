@@ -21,11 +21,11 @@ def get_oof(clf, x_train, y, x_test):
         'objective': 'regression',
         'metric': 'rmse',
         # 'max_depth': 15,
-        'num_leaves': 20,
+        'num_leaves': 30,
         'feature_fraction': 0.9,
         'bagging_fraction': 0.75,
         'bagging_freq': 4,
-        'learning_rate': 0.016*2,
+        'learning_rate': 0.016*5,
         #'max_bin':1023,
         'verbose': 0
     }
@@ -58,13 +58,13 @@ trainy = df['_stars_'].values
 trainX = df.drop(['_stars_'], axis=1)
 
 testX = pd.read_csv('./target.csv')
-oof_train, oof_test = get_oof(None, trainX, np.log(trainy+2.0), testX)
-rms = sqrt(mean_squared_error(trainy, oof_train))
+oof_train, oof_test = get_oof(None, trainX, np.log(trainy+2.0), testX.drop(['_filename_'], axis=1))
+
+rms = sqrt(mean_squared_error( np.log(trainy+2.0), oof_train))
 print('LGB OOF RMSE: {}'.format(rms))
 print("Modeling Stage")
-'''
-preds = np.concatenate([oof_test])
-sub = pd.read_csv('../input/sample_submission.csv')
-sub['target'] = np.around(np.expm1(preds), 0)
-sub.to_csv('sub_et2.csv', index=False)
-'''
+
+testX['preds'] = np.exp(np.concatenate([oof_test]))
+
+testX[['_filename_', 'preds']].to_csv('preds.csv', index=False)
+
