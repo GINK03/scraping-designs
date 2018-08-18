@@ -58,13 +58,13 @@ trainy = df['_stars_'].values
 trainX = df.drop(['_stars_'], axis=1)
 
 testX = pd.read_csv('./target.csv')
-oof_train, oof_test = get_oof(None, trainX, np.log(trainy+2.0), testX.drop(['_filename_'], axis=1))
+oof_train, oof_test = get_oof(None, trainX, np.log(trainy+2.0), testX.drop(['_hashval_'], axis=1))
 
 rms = sqrt(mean_squared_error( np.log(trainy+2.0), oof_train))
 print('LGB OOF RMSE: {}'.format(rms))
 print("Modeling Stage")
 
-testX['preds'] = np.exp(np.concatenate([oof_test]))
+testX['preds'] = np.exp(np.concatenate([oof_test])) - 2
 
-testX[['_filename_', 'preds']].to_csv('preds.csv', index=False)
+testX[['_hashval_', 'preds']].to_csv('preds.csv', index=False)
 
