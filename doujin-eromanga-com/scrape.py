@@ -64,7 +64,7 @@ def html(url):
 def main():
   seed = URL
   urls = html(seed) 
- 
+  print(urls) 
   try:
     print('try to load pickled urls')
     urls = pickle.loads( gzip.decompress( open('urls.pkl.gz', 'rb').read() ) )
