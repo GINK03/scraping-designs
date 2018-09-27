@@ -14,8 +14,10 @@ for path in Path('./darturl_clean').glob('*'):
   r     = requests.get(query)
   obj   = json.loads(r.text)
   obj['url'] = url
+  if obj.get('error'):
+    continue
  
   datum = json.dumps(obj, indent=2, ensure_ascii=False)
   print(datum) 
   open(f'facebook_score/{url_hash}', 'w').write( datum )
-  time.sleep(1.)
+  time.sleep(1.5)
