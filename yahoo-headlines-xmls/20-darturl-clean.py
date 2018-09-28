@@ -48,6 +48,7 @@ def pmap(path):
   link_hash = obj['link_hash']
   
   if 'rdsig.yahoo.co.jp' in link:
+    # rdsigは量が多すぎて評価できないので無視する
     print(link)
     rdsig((link, link_hash))
     ...

@@ -16,6 +16,7 @@ for link in soup.find_all('link'):
     continue
   xmls.append(href)
 
+
 for a in soup.find_all('a'):
   href = a.get('href')
   if re.search(r'xml$', href) is None:
