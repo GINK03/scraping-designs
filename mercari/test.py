@@ -19,7 +19,7 @@ def pmap(arg):
     try:
       url_hash = hashlib.sha256(bytes(url, 'utf8')).hexdigest()
       if key != -1 and os.path.exists(f'htmls/{url_hash}'):
-        print('already', url)
+        #print('already', url)
         continue
       if '/us/' in url:
         continue
@@ -33,8 +33,11 @@ def pmap(arg):
       soup = BS(r.text, 'html.parser')
       for a in soup.find_all('a', {'href':True}):
         href = a.get('href')
-        print(href)
+        if '/us/' in href: continue
+        if 'https://www.mercari.com/' not in href: continue
+
         href = re.sub(r'\?.*?$', '', href)
+        #print(href)
         hrefs.add(a.get('href'))
     except Exception as ex:
       print(ex)
@@ -47,7 +50,7 @@ else:
   urls = pmap((-1, [url]))
   print(urls)
 
-DIST = 25
+DIST = 3
 args = { key:[] for key in range(DIST) }
 [ args[index%DIST].append(url) for index, url in enumerate(urls) ] 
 args = [ (key,urls) for key, urls in args.items() ]
