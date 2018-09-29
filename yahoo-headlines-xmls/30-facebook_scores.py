@@ -63,7 +63,7 @@ if '--scan' in sys.argv:
         graph_access(url, acc, None)
         ...
       
-      time.sleep(1)
+      time.sleep(1.5)
 
 if '--clean' in sys.argv:
   for path in Path('./facebook_score_v2').glob('*'):
