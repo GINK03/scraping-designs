@@ -6,9 +6,11 @@ import gzip
 import pickle
 import sys
 import re
+import random
 url = 'https://item.mercari.com/jp/m54354648824/'
 
-user_agent = {'User-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36'}
+user_agent = {"Accept-Language": "ja-JP,ja;q=0.5", 'User-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36'}
+proxys = [ {'http':f'http://{es[0]}:{es[1]}'} for es in [ line.strip().split() for line in open('proxys') ] ]
 
 def pmap(arg):
   key, urls = arg
@@ -17,18 +19,21 @@ def pmap(arg):
     try:
       url_hash = hashlib.sha256(bytes(url, 'utf8')).hexdigest()
       if key != -1 and os.path.exists(f'htmls/{url_hash}'):
+        print('already', url)
+        continue
+      if '/us/' in url:
         continue
       print(key, url, index, len(urls))
       try:
-        r = requests.get(url, headers=user_agent, timeout=1)
+        r = requests.get(url, headers=user_agent, timeout=1, proxies=random.choice(proxys))
       except Exception as ex: 
         print(ex)
         continue
       open(f'htmls/{url_hash}','wb').write( gzip.compress(bytes(r.text,'utf8')) )
       soup = BS(r.text, 'html.parser')
       for a in soup.find_all('a', {'href':True}):
-        if 'https://www.mercari.com' not in a.get('href'): continue
         href = a.get('href')
+        print(href)
         href = re.sub(r'\?.*?$', '', href)
         hrefs.add(a.get('href'))
     except Exception as ex:
@@ -40,6 +45,7 @@ if '--resume' in sys.argv:
   urls = pickle.load(open('urls.pkl', 'rb') )
 else:
   urls = pmap((-1, [url]))
+  print(urls)
 
 DIST = 25
 args = { key:[] for key in range(DIST) }
