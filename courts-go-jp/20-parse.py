@@ -6,7 +6,7 @@ import re
 import requests
 from hashlib import sha256
 import os
-
+import json
 def trim(x):
   return re.sub(r'\s', '',x)
 def pmap(arg):
@@ -29,6 +29,12 @@ def pmap(arg):
   mini_blocks = dlist0.find_all('div', {'class':None})
   f,v = map(lambda x:trim(x.text), mini_blocks[5].find_all('div'))
   res[f] = v
+  
+  # 年月日
+  dlist1 = iters[1]
+  mini_blocks = dlist1.find_all('div', {'class':None})
+  f,v = map(lambda x:trim(x.text), mini_blocks[2].find_all('div'))
+  res[f] = v
 
   # 判決事項
   dlist2 = iters[2]
@@ -47,10 +53,13 @@ def pmap(arg):
   # pdfをダウンロード
   if not Path(f'pdfs/{case_number}.pdf').exists():
     os.system(f'wget {url} -O pdfs/"{case_number}".pdf') 
-  #text = os.popen(f'pdftotext pdfs/"{case_number}".pdf -').read()
-  #print(text)
-  print(res)
+  text = os.popen(f'pdftotext pdfs/"{case_number}".pdf -').read()
+  text = re.sub(r'\n', '', text)
+  text = re.sub(r'\s{1,}', ' ', text)
 
+  res['text'] = text
+  print(res)
+  json.dump(res, open(f'jsons/{case_number}.json','w'), indent=2, ensure_ascii=False)
 args = []
 for path in Path('./htmls').glob('*'):
   args.append(path)
