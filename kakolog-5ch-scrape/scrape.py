@@ -42,24 +42,27 @@ def html(url):
       open(save_name, 'wb').write( gzip.compress(bytes(html,'utf8')) )
     except OSError:
       return []
-    soup = bs4.BeautifulSoup(html)
+    soup = bs4.BeautifulSoup(html, 'html5lib')
    
     hrefs = []
     for href in soup.find_all('a', href=True): 
       _url = href['href']
-      #print('候補', _url)
+      try:
+        if '//' == _url[0:2]:
+          _url = 'https:' + _url
+      except IndexError as e:
+        continue
       try:
         if '/' == _url[0]:
           _url = '/'.join(url.split('/')[:3]) + _url
       except IndexError as e:
         continue
-      #if re.search(r'^' + URL, _url) is None: 
-      #  continue
-      #_url = re.sub(r'\?.*?$', '', _url)
       if '5ch.net/' in _url:
         hrefs.append(_url)
-        #print('add', _url)
     open(save_href, 'w').write( json.dumps(hrefs) )
+    del soup, r
+    import gc
+    gc.collect()
     return [href for href in hrefs if os.path.exists('htmls/' + hashlib.sha256(bytes(href,'utf8')).hexdigest()) == False] 
     #return hrefs
   except Exception as ex:
@@ -71,7 +74,11 @@ def main():
   
   try:
     print('try to load pickled urls')
-    urls = pickle.loads( gzip.decompress( open('urls.pkl.gz', 'rb').read() ) )
+    if '--resume' in sys.argv:
+      urls = pickle.loads( gzip.decompress( open('urls.pkl.gz', 'rb').read() ) )
+    if '--regen' in sys.argv:
+      urls = pickle.loads( gzip.decompress( open('urls_regen.pkl.gz', 'rb').read() ) )
+
     print(urls)
     print('finished to load pickled urls')
   except FileNotFoundError as e:
@@ -79,11 +86,11 @@ def main():
   
   while urls != set():
     nextUrls = set()
-    with concurrent.futures.ProcessPoolExecutor(max_workers=16) as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=36) as executor:
       for rurls in executor.map(html, urls):
         for url in rurls:
           nextUrls.add(url)
-          print(url)
+          print('next_url', url)
     urls = nextUrls
     print(urls)
     open('urls.pkl.gz', 'wb').write( gzip.compress(pickle.dumps(urls)) )
