@@ -7,8 +7,10 @@ import re
 import hashlib
 import json
 from pathlib import Path
+import chardet
 def _map(arg):
 	index, names = arg
+	fp =open(f'posts/{index:02d}.jsonl', 'w')
 	for name in names:
 		print(name)
 		html = gzip.decompress(open(name, 'rb').read()).decode()
@@ -26,24 +28,25 @@ def _map(arg):
 				user = dt.find('b').text
 				datetime = re.search(r'\d\d\/\d\d/\d\d', dt.text).group(0)
 				post = re.sub(r'\n', ' ', dd.text)
+				# 文字化けならファイルを削除してなかったことに
+				if '�' in post or '�' in user:
+					Path(name).unlink()
+					break
 				obj = {'user':user, 'datetime':datetime, 'post':post}
-				ser = json.dumps(obj, indent=2, ensure_ascii=False)
-				hashed = hashlib.sha256(bytes(ser, 'utf8')).hexdigest()
-				Path(f'posts/{datetime}').mkdir(parents=True, exist_ok=True)
-				if Path(f'posts/{datetime}/{hashed}.json').exists():
-					continue
-				open(f'posts/{datetime}/{hashed}.json', 'w').write( ser )
+				ser = json.dumps(obj, ensure_ascii=False)
+				fp.write(ser + '\n')
 				#print(user, datetime, post)
 			except Exception as ex:
-				print(ex)
-				print(dt.text)
+				#print(ex)
+				#print(dt.text)
+				...
 args = {}
 for index,name in enumerate(glob.glob('htmls/*')):
-	key = index%12
+	key = index%100
 	if args.get(key) is None:
 		args[key] = []
 	args[key].append(name)
 args = [(key, names) for key,names in args.items()]
 #[_map(arg) for arg in args]
-with concurrent.futures.ProcessPoolExecutor(max_workers=12) as exe:
+with concurrent.futures.ProcessPoolExecutor(max_workers=16) as exe:
 	exe.map( _map, args)

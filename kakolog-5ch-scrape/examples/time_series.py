@@ -2,29 +2,27 @@ from pathlib import Path
 import json
 from concurrent.futures import ProcessPoolExecutor as PPE
 
-
+import smart_open
 
 def pmap(arg):
-	key,paths = arg
+	key,path = arg
 	date_freq = {}
-	for path in paths:
-		try:
-			obj = json.load(path.open())
-		except:
-			continue
+	print(path)
+	fp = open(path)
+	for line in fp:
+		line = line.strip()	
+		obj = json.loads(line)
 		datetime = obj['datetime']
+		datetime = '/'.join(datetime.split('/')[0:2])
+		#print(datetime, line)
+		if len(datetime) != 5:
+			continue
 		if date_freq.get(datetime) is None:
 			date_freq[datetime] = 0
 		date_freq[datetime] += 1
 	return date_freq
 
-key_paths = {}
-for index, path in enumerate(Path('../posts').glob('*.json')):
-	key = index%12
-	if key_paths.get(key) is None:
-		key_paths[key] = []
-	key_paths[key].append(path)
-args = [(key,paths) for key,paths in key_paths.items()]
+args = [(index,path) for index, path in enumerate(list(Path('../posts').glob('*.jsonl')))]
 
 date_freq = {}
 with PPE(max_workers=12) as exe:
