@@ -42,11 +42,11 @@ def _map(arg):
 				...
 args = {}
 for index,name in enumerate(glob.glob('htmls/*')):
-	key = index%100
+	key = index%128
 	if args.get(key) is None:
 		args[key] = []
 	args[key].append(name)
 args = [(key, names) for key,names in args.items()]
 #[_map(arg) for arg in args]
-with concurrent.futures.ProcessPoolExecutor(max_workers=16) as exe:
+with concurrent.futures.ProcessPoolExecutor(max_workers=128) as exe:
 	exe.map( _map, args)

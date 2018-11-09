@@ -31,7 +31,7 @@ def html(arg):
 	random.shuffle(urls)
 	for url in urls:
 		try:
-			print(url)
+			print(key, url)
 			save_name = 'htmls/' + hashlib.sha256(bytes(url,'utf8')).hexdigest()
 			save_href = 'hrefs/' + hashlib.sha256(bytes(url,'utf8')).hexdigest()
 			if os.path.exists(save_name) is True:
