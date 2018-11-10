@@ -11,7 +11,10 @@ def pmap(arg):
 	fp = open(path)
 	for line in fp:
 		line = line.strip()	
-		obj = json.loads(line)
+		try:
+			obj = json.loads(line)
+		except: 
+			continue
 		datetime = obj['datetime']
 		datetime = '/'.join(datetime.split('/')[0:2])
 		#print(datetime, line)
