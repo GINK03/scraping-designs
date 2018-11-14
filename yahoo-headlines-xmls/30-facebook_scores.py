@@ -6,40 +6,39 @@ import os
 import sys
 import time
 from datetime import datetime 
-accs = [ line.strip() for line in open('tokens') ]
+import random
+import datetime
 
+def graph_access(url, acc, obj=None):
+	query = f'https://graph.facebook.com/?id={url}&fields=og_object{{engagement}},engagement&access_token={acc}'
+	r     = requests.get(query)
+	fb_obj   = json.loads(r.text)
+	tdatetime = datetime.datetime.now()
+	eval_time = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
+	
+	obj = {} if obj is None else obj
+	obj['url']       = url
+	obj[eval_time] = fb_obj
+	if fb_obj.get('error'):
+		print('error', fb_obj['error']['message'])
+		print(fb_obj)
+		if 'Cannot specify an empty identifier' == fb_obj['error']['message']:
+			path.unlink()
+			time.sleep(5.0)
+			return
+		time.sleep(30.0)
+		return
+	datum = json.dumps(obj, indent=2, ensure_ascii=False)
+	print(datum) 
+	open(f'facebook_score_v2/{url_hash}', 'w').write( datum )
+
+accs = [ line.strip() for line in open('tokens') ]
 if '--scan' in sys.argv:
-  import random
-  import datetime
-  def graph_access(url, acc, obj=None):
-    query = f'https://graph.facebook.com/?id={url}&fields=og_object{{engagement}},engagement&access_token={acc}'
-    r     = requests.get(query)
-    fb_obj   = json.loads(r.text)
-    tdatetime = datetime.datetime.now()
-    eval_time = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
-    
-    obj = {} if obj is None else obj
-    obj['url']       = url
-    obj[eval_time] = fb_obj
-    if fb_obj.get('error'):
-      print('error', fb_obj['error']['message'])
-      print(fb_obj)
-      if 'Cannot specify an empty identifier' == fb_obj['error']['message']:
-        path.unlink()
-        time.sleep(5.0)
-        return
-      time.sleep(30.0)
-      return
-    datum = json.dumps(obj, indent=2, ensure_ascii=False)
-    print(datum) 
-    open(f'facebook_score_v2/{url_hash}', 'w').write( datum )
-    
   # make loop
   while True:
     for index, path in enumerate(Path('darturl_clean').glob('*')):
       key = index%len(accs)
       acc = accs[random.randint(0, len(accs)-1)]
-
       print(acc)
       url   = path.open().read()
       url_hash = sha256(bytes(url,'utf8')).hexdigest() 
@@ -48,13 +47,16 @@ if '--scan' in sys.argv:
         eval_times = [datetime.datetime.strptime(eval_time, '%Y-%m-%d %H:%M:%S') for eval_time in obj.keys() if eval_time != 'url']
         eval_times = sorted(eval_times) 
         now_datetime = datetime.datetime.now()
-
         delta_time = now_datetime - eval_times[-1]
+
+				delta_time_head = now_datetime - eval_times[0]	
         print(eval_times)
         # 三時間たびにスキャンする
         if delta_time.seconds > 3600 * 3:
           graph_access(url, acc, obj)
-        else:
+				# 最古のものから36時間以上,古いものはunlinkする
+        elif  delta_time_head.hours >= timedelta(hours=36):
+					path.unlink()
           continue
       else:
         graph_access(url, acc, None)
