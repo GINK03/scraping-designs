@@ -22,11 +22,11 @@ for body in df['body']:
 df['kankoku'] = pd.Series(flags).astype(int)
 df['total_sample'] = 1
 df = df[['year_month', 'kankoku', 'total_sample']].groupby('year_month').sum().reset_index()
-df = df[df['year_month'] >= '2011-01']
+#df = df[df['year_month'] >= '2011-01']
 print(df.sort_values(by=['year_month'], ascending=False).head(20),)
 df['kankoku'] = df['kankoku']/df['total_sample']
 pyplot.figure(figsize=(30, 30))
-ax = sns.barplot(x="year_month", y="kankoku", data=df)
+ax = sns.barplot(x="year_month", y="total_sample", data=df)
 sns.set(font_scale=2)
 ax.set(xlabel='year_month', ylabel='total_sample')
 ax.set_xticklabels(labels=ax.get_xticklabels(), rotation=90)

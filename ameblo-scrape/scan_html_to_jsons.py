@@ -50,6 +50,7 @@ def pmap(arg):
             if random.random() <= 0.05:
                 print(record)
         except Exception as ex:
+            Path(name).unlink()
             print(ex)
 
 def main():
