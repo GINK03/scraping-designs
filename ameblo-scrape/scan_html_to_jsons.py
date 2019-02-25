@@ -23,6 +23,7 @@ def _map(arg):
         if titles == [None, None]:
             return
         title = [t for t in [t.text for t in titles if t is not None] if t not in ['SNSアカウント']]
+        title = ' '.join(title)
         canonical = soup.find('link', {'rel':'canonical'})
         if canonical is None:
             Path(name).unlink()
