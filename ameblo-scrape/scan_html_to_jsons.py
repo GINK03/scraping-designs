@@ -10,6 +10,9 @@ import json
 def _map(arg):
     index, name = arg
     try:
+        sha256 = name.split('/')[-1] 
+        if Path(f'jsons/{sha256}').exists():
+            return
         html = gzip.decompress(open(name, 'rb').read()).decode()
         soup = bs4.BeautifulSoup(html, 'lxml')
         for script in soup(["script", "style"]):
@@ -35,7 +38,6 @@ def _map(arg):
             return
         body = body.text.replace('\n', ' ')
         body = re.sub(r'\s{1,}', ' ', body)
-        sha256 = hashlib.sha256(bytes(body, 'utf8')).hexdigest()
         record = {'title':title, 'canonical':canonical.get('href'), 'time':time, 'body':body, 'sha256':sha256}
         with open(f'jsons/{sha256}', 'w') as fp:
             fp.write(json.dumps(record, indent=2, ensure_ascii=False))
