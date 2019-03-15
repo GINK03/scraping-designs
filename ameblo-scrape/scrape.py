@@ -79,9 +79,11 @@ def main():
   while True:
     nextUrls = set()
     with concurrent.futures.ProcessPoolExecutor(max_workers=16*3) as executor:
-      for rurls in executor.map(html, urls):
-        for url in rurls:
-          nextUrls.add(url)
+        urls = list(urls)
+        random.shuffle(urls)
+        for rurls in executor.map(html, urls):
+            for url in rurls:
+                nextUrls.add(url)
     urls = nextUrls
     open('urls.pkl.gz', 'wb').write( gzip.compress(pickle.dumps(urls)) )
        
