@@ -7,12 +7,13 @@ from concurrent.futures import ProcessPoolExecutor as PPE
 
 args = {}
 for idx, path in enumerate(Path('jsons').glob('*')):
-    key = idx % 16
+    key = idx % 96
     if args.get(key) is None:
         args[key] = []
     args[key].append(path)
 args = [(key, paths) for key,paths in args.items()]
 
+Path('tmp').mkdir(exist_ok=True)
 def pmap(arg):
     key, paths = arg
     records = []
@@ -23,11 +24,8 @@ def pmap(arg):
             records.append(record)
         except Exception as ex:
             print(ex)
-    return records
+    df = pd.DataFrame(records)
+    df.to_csv(f'tmp/ameblo_{key:03d}.csv', index=None)
 
-records = []
 with PPE(max_workers=16) as exe:
-    for _records in exe.map(pmap, args):
-        records.extend(_records)
-df = pd.DataFrame(records)
-df.to_csv('ameblo.csv', index=None)
+    exe.map(pmap, args)

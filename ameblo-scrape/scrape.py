@@ -70,13 +70,18 @@ def html(arg):
                 _url = re.sub(r'#.*?$', '', _url)
                 _url = _url.replace('//ameblo.jp//ameblo.jp', '//ameblo.jp')
                 hrefs.append(_url)
-            open(save_href, 'w').write(json.dumps(hrefs))
-            [href_buffs.add(href) for href in set(hrefs)]
+            try:
+              open(save_href, 'w').write(json.dumps(list(set(hrefs) - href_buffs)))
+              print('ordinal save href data', url)
+            except Exception as ex:
+              print('cannot save', url, ex)
+              continue
+            #[href_buffs.add(href) for href in set(hrefs)]
         except Exception as ex:
             print(ex)
-    Path('tmp').mkdir(exist_ok=True)
-    with open(f'tmp/{key:02d}.pkl', 'wb') as fp:
-        fp.write( pickle.dumps(href_buffs) )
+    #Path('tmp').mkdir(exist_ok=True)
+    #with open(f'tmp/{key:02d}.pkl', 'wb') as fp:
+    #    fp.write( pickle.dumps(href_buffs) )
 
 def chunk_up(urls):
     urls = list(urls)
@@ -97,7 +102,7 @@ def main():
     try:
         print('try to load pickled urls')
         urls = pickle.loads(gzip.decompress(open('urls.pkl.gz', 'rb').read()))
-        print(urls)
+        #print(urls)
         print('finished to load pickled urls')
     except FileNotFoundError as e:
         ...
