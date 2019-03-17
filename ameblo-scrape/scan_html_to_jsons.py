@@ -1,4 +1,5 @@
 import os
+import sys
 import glob
 import gzip
 import bs4, lxml
@@ -10,9 +11,12 @@ import json
 import random
 def pmap(arg):
     key, names = arg
+    random.shuffle(names)
     for name in names:
         try:
             sha256 = name.split('/')[-1] 
+            if Path(name).exists() is False:
+                continue
             if Path(f'jsons/{sha256}').exists():
                 continue
             html = gzip.decompress(open(name, 'rb').read()).decode()
@@ -48,12 +52,20 @@ def pmap(arg):
         except Exception as ex:
             print(ex)
 
-args = {}
-for index,name in enumerate(glob.glob('htmls/*')):
-    key = index % 32
-    if args.get(key) is None:
-        args[key] = []
-    args[key].append(name)
-args = [(key,names) for key, names in args.items()]
-with concurrent.futures.ProcessPoolExecutor(max_workers=32) as exe:
-  exe.map(pmap, args)
+def main():
+    args = {}
+    for index,name in enumerate(glob.glob('htmls/*')):
+        key = index % 32
+        if args.get(key) is None:
+            args[key] = []
+        args[key].append(name)
+    args = [(key,names) for key, names in args.items()]
+    with concurrent.futures.ProcessPoolExecutor(max_workers=32) as exe:
+      exe.map(pmap, args)
+
+if __name__ == '__main__':
+    if '--loop' in sys.argv:
+        while True:
+            main()
+    else:
+        main()

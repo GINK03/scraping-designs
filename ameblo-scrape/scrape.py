@@ -27,6 +27,7 @@ URL = 'https://ameblo.jp'
 def html(url): 
   try:
     url = url.replace('//ameblo.jp//ameblo.jp', '//ameblo.jp')
+    url = re.sub(r'#.*?$', '', url)
     save_name = 'htmls/' + hashlib.sha256(bytes(url,'utf8')).hexdigest()
     save_href = 'hrefs/' + hashlib.sha256(bytes(url,'utf8')).hexdigest()
     #if os.path.exists(save_name) is True:
@@ -58,6 +59,7 @@ def html(url):
       if re.search(r'^' + URL, _url) is None: 
         continue
       _url = re.sub(r'\?.*?$', '', _url)
+      _url = re.sub(r'#.*?$', '', _url)
       _url = _url.replace('//ameblo.jp//ameblo.jp', '//ameblo.jp')
       hrefs.append(_url)
     open(save_href, 'w').write( json.dumps(hrefs) )

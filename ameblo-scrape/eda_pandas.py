@@ -13,7 +13,8 @@ if '--init' in sys.argv:
 
 df = pd.read_pickle('ameblo.pkl')
 df['time'] = df['time'].dt.tz_localize(None)
-df['year_month'] = df['time'].apply(lambda x:f'{x.year:04d}_{x.month:02d}')
+df = df[pd.notna(df['time'])]
+df['year_month'] = df['time'].apply(lambda x:f'{int(x.year):04d}_{int(x.month):02d}')
 flags = []
 for body in df['body']:
     #flags.append('台湾' in str(body) and '旅行' in str(body))
