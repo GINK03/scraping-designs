@@ -48,6 +48,7 @@ except:
 
 def html(url):
     try:
+        url = re.sub(r'/inquiry', '', url)
         save_name = 'htmls/' + hashlib.sha256(bytes(url, 'utf8')).hexdigest()
         save_href = 'hrefs/' + hashlib.sha256(bytes(url, 'utf8')).hexdigest()
         if os.path.exists(save_href) is True:
@@ -79,6 +80,8 @@ def html(url):
                 continue
             urlNext = re.sub(r'\?.*$', '', urlNext)
             assert urlNext != None, "illigal href"
+            urlNext = re.sub(r'/inquiry', '', urlNext)
+            assert re.match(r'/inquiry', urlNext) is None, "this domain's exception"
             save_href_next = 'hrefs/' + hashlib.sha256(bytes(urlNext, 'utf8')).hexdigest() 
             if os.path.exists(save_href_next) is True:
                 continue
