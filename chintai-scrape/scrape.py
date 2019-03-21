@@ -71,7 +71,7 @@ def html(arg):
             html = r.text
             open(save_name, 'wb').write(gzip.compress(bytes(html, 'utf8')))
             soup = bs4.BeautifulSoup(html, 'lxml')
-
+            ret_urls_chunk = set()
             for a in soup.find_all('a', href=True):
                 urlNext = a['href']
                 if urlNext is None:
@@ -92,9 +92,10 @@ def html(arg):
                 if os.path.exists(save_href_next) is True:
                     continue
                 # print(urlNext)
-                ret_urls.add(urlNext)
+                ret_urls_chunk.add(urlNext)
             with open(save_href, 'w') as fp:
-                fp.write(json.dumps(list(ret_urls)))
+                fp.write(json.dumps(list(ret_urls_chunk)))
+            ret_urls |= ret_urls_chunk
         except Exception as ex:
             logger.info(f'{ex}')
     return ret_urls

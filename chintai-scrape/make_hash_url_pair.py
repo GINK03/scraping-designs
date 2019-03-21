@@ -5,13 +5,15 @@ import gzip
 import os
 import hashlib
 import re
-names = set([name.split('/').pop() for name in glob.glob('hrefs/*')])
 
+names = set([name.split('/').pop() for name in glob.glob('hrefs/*')])
 hash_url = {}
 for name in names:
     print(name)
     try:
         obj = json.loads(open('hrefs/' + name).read())
+        # データサイズが多すぎるのですべて削除しシュリンク
+        open('hrefs/' + name, 'w').write('')
     except Exception as ex:
         continue
     # [urls.add(re.sub(r'\?.*?$', '', url)) for url in obj if hashlib.sha256(
@@ -21,3 +23,4 @@ for name in names:
         hash_url[hash] = url
 
 json.dump(hash_url, fp=open('hash_url.json', 'w'), indent=2)
+
