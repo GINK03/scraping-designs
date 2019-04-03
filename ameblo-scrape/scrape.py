@@ -32,6 +32,8 @@ def html(url):
     save_href = 'hrefs/' + hashlib.sha256(bytes(url,'utf8')).hexdigest()
     if os.path.exists(save_name) is True:
       return []
+    if os.path.exists(save_href) is True:
+      return []
     headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36'}
     try:
       r = requests.get(url, headers=headers)
