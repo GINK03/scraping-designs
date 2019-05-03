@@ -6,7 +6,7 @@ import concurrent.futures
 import re
 import hashlib
 from pathlib import Path
-
+import json
 def _map(arg):
     index, name = arg
     try:
@@ -33,7 +33,12 @@ def _map(arg):
             Path(name).unlink()
             return
         body = body.text.replace('\n', ' ')
-        #print(title, canonical.get('href'), time, body)
+        body = re.sub(r'\s{1,}', ' ', body)
+        sha256 = hashlib.sha256(bytes(body, 'utf8')).hexdigest()
+        record = {'title':title, 'canonical':canonical.get('href'), 'time':time, 'body':body, 'sha256':sha256}
+        with open(f'jsons/{sha256}', 'w') as fp:
+            fp.write(json.dumps(record, indent=2, ensure_ascii=False))
+        print(record)
     except Exception as ex:
         print(ex)
 
