@@ -27,14 +27,14 @@ URL = 'https://ameblo.jp'
 def html(url): 
   try:
     url = url.replace('//ameblo.jp//ameblo.jp', '//ameblo.jp')
-    print(url)
     save_name = 'htmls/' + hashlib.sha256(bytes(url,'utf8')).hexdigest()
     save_href = 'hrefs/' + hashlib.sha256(bytes(url,'utf8')).hexdigest()
-    if os.path.exists(save_name) is True:
-      return []
+    #if os.path.exists(save_name) is True:
+    #  return []
     if os.path.exists(save_href) is True:
       return []
     headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36'}
+    print(url)
     try:
       r = requests.get(url, headers=headers)
     except Exception as e:
@@ -61,7 +61,7 @@ def html(url):
       _url = _url.replace('//ameblo.jp//ameblo.jp', '//ameblo.jp')
       hrefs.append(_url)
     open(save_href, 'w').write( json.dumps(hrefs) )
-    return [href for href in hrefs if os.path.exists('htmls/' + hashlib.sha256(bytes(href,'utf8')).hexdigest()) == False] 
+    return [href for href in set(hrefs) if os.path.exists('hrefs/' + hashlib.sha256(bytes(href,'utf8')).hexdigest()) == False] 
   except Exception as ex:
     print(ex)
 
