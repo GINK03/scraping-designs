@@ -22,7 +22,8 @@ def pmap(arg):
             continue
         try:
             with path.open('w') as fw:
-                json.dump(list(obj - objs), fp=fw)
+                #json.dump(list(obj - objs), fp=fw)
+                json.dump([], fp=fw)
         except Exception as ex:
             print(ex)
             continue

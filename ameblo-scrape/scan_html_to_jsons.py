@@ -18,8 +18,11 @@ def pmap(arg):
             if Path(name).exists() is False:
                 continue
             if Path(f'jsons/{sha256}').exists():
+                #open(name, 'wb').write(gzip.compress(bytes('finished', 'utf8')))
                 continue
             html = gzip.decompress(open(name, 'rb').read()).decode()
+            if html == 'finished':
+                continue
             soup = bs4.BeautifulSoup(html, 'lxml')
             for script in soup(["script", "style"]):
                 script.extract()    # rip it out
@@ -49,6 +52,7 @@ def pmap(arg):
                 fp.write(json.dumps(record, indent=2, ensure_ascii=False))
             if random.random() <= 0.05:
                 print(record)
+            open(name, 'wb').write(gzip.compress(bytes('finished', 'utf8')))
         except Exception as ex:
             Path(name).unlink()
             print(ex)
