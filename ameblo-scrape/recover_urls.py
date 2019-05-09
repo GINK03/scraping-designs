@@ -5,7 +5,7 @@ import gzip
 import pickle
 import random
 from concurrent.futures import ProcessPoolExecutor as PPE
-
+import CONFIG
 def pmap(arg):
     key, files = arg
     objs = set()
@@ -21,9 +21,10 @@ def pmap(arg):
             path.unlink()
             continue
         try:
-            with path.open('w') as fw:
-                #json.dump(list(obj - objs), fp=fw)
-                json.dump([], fp=fw)
+            #with path.open('w') as fw:
+            #    #json.dump(list(obj - objs), fp=fw)
+            #    json.dump([], fp=fw)
+            ...
         except Exception as ex:
             print(ex)
             continue
@@ -31,9 +32,9 @@ def pmap(arg):
     return objs
 
 def run():
-    files = list(Path('hrefs').glob('*'))
+    files = list(Path(CONFIG.HREF_PATH).glob('*'))
     random.shuffle(files) 
-    files = files[:1000_0000]
+    files = files[:100_0000]
 
     args = {}
     for idx, file in enumerate(files):

@@ -5,10 +5,10 @@ import gzip
 import bs4, lxml
 import concurrent.futures
 import re
-import hashlib
 from pathlib import Path
 import json
 import random
+import CONFIG
 def pmap(arg):
     key, names = arg
     random.shuffle(names)
@@ -19,17 +19,16 @@ def pmap(arg):
                 continue
             if Path(f'jsons/{sha256}').exists():
                 #open(name, 'wb').write(gzip.compress(bytes('finished', 'utf8')))
+                #print('already processed', name)
                 continue
             html = gzip.decompress(open(name, 'rb').read()).decode()
-            if html == 'finished':
-                continue
             soup = bs4.BeautifulSoup(html, 'lxml')
             for script in soup(["script", "style"]):
                 script.extract()    # rip it out
 
             article = soup.find('article')
             if article is None:
-                Path(name).unlink()
+                #Path(name).unlink()
                 continue
             titles = [article.h1, article.h2] 
             if titles == [None, None]:
@@ -38,12 +37,12 @@ def pmap(arg):
             title = ' '.join(title)
             canonical = soup.find('link', {'rel':'canonical'})
             if canonical is None:
-                Path(name).unlink()
+                #Path(name).unlink()
                 continue
             time = soup.time.get('datetime')
             body = soup.find('div', {'id':'entryBody'})
             if body is None:
-                Path(name).unlink()
+                #Path(name).unlink()
                 continue
             body = body.text.replace('\n', ' ')
             body = re.sub(r'\s{1,}', ' ', body)
@@ -52,14 +51,14 @@ def pmap(arg):
                 fp.write(json.dumps(record, indent=2, ensure_ascii=False))
             if random.random() <= 0.05:
                 print(record)
-            open(name, 'wb').write(gzip.compress(bytes('finished', 'utf8')))
+            #open(name, 'wb').write(gzip.compress(bytes('finished', 'utf8')))
         except Exception as ex:
-            Path(name).unlink()
+            #Path(name).unlink()
             print(ex)
 
 def main():
     args = {}
-    for index,name in enumerate(glob.glob('htmls/*')):
+    for index,name in enumerate(glob.glob( CONFIG.HTML_PATH +'/*')):
         key = index % 32
         if args.get(key) is None:
             args[key] = []

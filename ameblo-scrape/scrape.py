@@ -21,13 +21,8 @@ import re
 import hashlib
 import time
 from pathlib import Path
-try:
-    os.mkdir('htmls')
-    os.mkdir('hrefs')
-except:
-    ...
+import CONFIG
 URL = 'https://ameblo.jp'
-
 
 def html(arg):
     key, urls = arg
@@ -37,12 +32,15 @@ def html(arg):
         try:
             url = url.replace('//ameblo.jp//ameblo.jp', '//ameblo.jp')
             url = re.sub(r'#.*?$', '', url)
-            save_name = 'htmls/' + hashlib.sha256(bytes(url, 'utf8')).hexdigest()
-            save_href = 'hrefs/' + hashlib.sha256(bytes(url, 'utf8')).hexdigest()
+            save_name = CONFIG.HTML_PATH + '/' + hashlib.sha256(bytes(url, 'utf8')).hexdigest()[:20]
+            save_href = CONFIG.HREF_PATH + '/' + hashlib.sha256(bytes(url, 'utf8')).hexdigest()[:20]
+            save_jsons = 'jsons/' + hashlib.sha256(bytes(url, 'utf8')).hexdigest()[:20]
             if Path(save_href).exists() is True:
                 continue
+            if Path(save_jsons).exists() is True:
+                continue
             headers = {
-                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36'}
+                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) [Scraper]'}
             print(key, idx, len(urls), url)
             try:
                 r = requests.get(url, headers=headers)
@@ -52,7 +50,8 @@ def html(arg):
             html = r.text
             try:
                 open(save_name, 'wb').write(gzip.compress(bytes(html, 'utf8')))
-            except OSError:
+            except OSError as ex:
+                print('error write html', url)
                 continue
             soup = bs4.BeautifulSoup(html, 'lxml')
 
@@ -64,7 +63,8 @@ def html(arg):
                         _url = URL + _url
                 except IndexError as e:
                     continue
-                if re.search(r'^' + URL, _url) is None:
+                if not (re.search(r'^' + URL, _url) or \
+                    re.search(r'https://profile.ameba.jp', _url)):
                     continue
                 _url = re.sub(r'\?.*?$', '', _url)
                 _url = re.sub(r'#.*?$', '', _url)
