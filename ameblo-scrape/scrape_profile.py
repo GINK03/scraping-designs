@@ -92,14 +92,14 @@ def chunk_up(urls):
         args[key].append(url)
     args = [(key, urls) for key, urls in args.items()]
     return args
-
+from tqdm import tqdm
 def main():
     html((-1, [URL]))
     while True:
         files = list(Path(CONFIG.HREF_PATH_PROFILE).glob('*'))
         urls = set()
         random.shuffle(files)
-        for file in files:
+        for file in tqdm(files):
             [urls.add(url) for url in json.load(open(file))]
         #while True:
         with concurrent.futures.ProcessPoolExecutor(max_workers=16) as executor:
