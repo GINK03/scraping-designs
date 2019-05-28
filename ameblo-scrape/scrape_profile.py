@@ -1,3 +1,4 @@
+from tqdm import tqdm
 import os
 import math
 import sys
@@ -22,17 +23,22 @@ import hashlib
 import time
 from pathlib import Path
 import CONFIG
+
 URL = 'https://profile.ameba.jp/'
+
 
 def html(arg):
     key, urls = arg
 
     href_buffs = set()
     for idx, url in enumerate(urls):
+        time.sleep(1)
         try:
-            save_name = CONFIG.HTML_PATH_PROFILE + '/' + hashlib.sha256(bytes(url, 'utf8')).hexdigest()[:20]
-            save_href = CONFIG.HREF_PATH_PROFILE + '/' + hashlib.sha256(bytes(url, 'utf8')).hexdigest()[:20]
-            
+            save_name = CONFIG.HTML_PATH_PROFILE + '/' + \
+                hashlib.sha256(bytes(url, 'utf8')).hexdigest()[:20]
+            save_href = CONFIG.HREF_PATH_PROFILE + '/' + \
+                hashlib.sha256(bytes(url, 'utf8')).hexdigest()[:20]
+
             if Path(save_href).exists() is True:
                 continue
             headers = {
@@ -65,21 +71,18 @@ def html(arg):
                 except IndexError as e:
                     continue
                 if re.search(r'profile.ameba.jp', _url) is None:
-                      continue
-                #print(_url)
+                    continue
+                # print(_url)
                 hrefs.append(_url)
             try:
-              open(save_href, 'w').write(json.dumps(list(set(hrefs) - href_buffs)))
-              print('ordinal save href data', url)
+                open(save_href, 'w').write(
+                    json.dumps(list(set(hrefs) - href_buffs)))
+                print('ordinal save href data', url)
             except Exception as ex:
-              print('cannot save', url, ex)
-              continue
-            #[href_buffs.add(href) for href in set(hrefs)]
+                print('cannot save', url, ex)
+                continue
         except Exception as ex:
             print(ex)
-    #Path('tmp').mkdir(exist_ok=True)
-    #with open(f'tmp/{key:02d}.pkl', 'wb') as fp:
-    #    fp.write( pickle.dumps(href_buffs) )
 
 def chunk_up(urls):
     urls = list(urls)
@@ -92,7 +95,7 @@ def chunk_up(urls):
         args[key].append(url)
     args = [(key, urls) for key, urls in args.items()]
     return args
-from tqdm import tqdm
+
 def main():
     html((-1, [URL]))
     while True:
@@ -101,10 +104,8 @@ def main():
         random.shuffle(files)
         for file in tqdm(files):
             [urls.add(url) for url in json.load(open(file))]
-        #while True:
         with concurrent.futures.ProcessPoolExecutor(max_workers=16) as executor:
             args = chunk_up(urls)
             executor.map(html, args)
-    
 
 main()

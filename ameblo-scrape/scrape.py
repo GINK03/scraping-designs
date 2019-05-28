@@ -25,12 +25,15 @@ from pathlib import Path
 import CONFIG
 URL = 'https://ameblo.jp'
 
+def get_lazy(n):
+    time.sleep(n) 
 
 def html(arg):
     key, urls = arg
 
     href_buffs = set()
     for idx, url in enumerate(urls):
+        get_lazy(1)
         try:
             url = url.replace('//ameblo.jp//ameblo.jp', '//ameblo.jp')
             url = re.sub(r'#.*?$', '', url)
